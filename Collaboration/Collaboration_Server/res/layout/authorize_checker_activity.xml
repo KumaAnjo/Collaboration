@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="21sp"
+        android:text="@string/request_to_connection"
+        android:layout_marginTop="12dip"
+        android:layout_marginBottom="12dip"
+        style="@style/DialogTheme" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#D0D0D0" />
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="18sp"
+        android:id="@+id/title"
+        android:layout_marginTop="12dip"
+        style="@style/DialogTheme"/>
+
+    <CheckBox
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="10dip"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="14sp"
+        android:text="@string/request_connection_aways_allow"
+        android:id="@+id/save_device_info"
+        style="@style/DialogTheme"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#D0D0D0" />
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle">
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:text="@android:string/cancel"
+            android:id="@+id/button_cancel"
+            style="?android:attr/buttonBarButtonStyle" />
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:text="@android:string/ok"
+            android:id="@+id/button_ok"
+            style="?android:attr/buttonBarButtonStyle" />
+    </LinearLayout>
+
+</LinearLayout>

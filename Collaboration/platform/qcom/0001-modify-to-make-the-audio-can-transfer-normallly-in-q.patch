@@ -1,0 +1,185 @@
+From cedcddc6eef49370e43f0549fd9885195f3522a0 Mon Sep 17 00:00:00 2001
+From: qing.liu <qing.liu@ck-telecom.com>
+Date: Wed, 18 Mar 2015 10:49:25 +0800
+Subject: [PATCH] modify to make the audio can transfer normallly in qcom platform
+
+[Solution Description]
+    modified:   Collaboration/Collaboration_Client/src/com/goldsand/collaboration/client/phone/audio/AudioManager.java
+    modified:   Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/CollaborationService.java
+    modified:   Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/phone/audio/AudioManager.java
+    modified:   Collaboration/Collaboration_Server/src/org/webrtc/voiceengine/WebRTCAudioDevice.java
+    modified:   Collaboration/Collaboration_Client/src/org/webrtc/voiceengine/WebRTCAudioDevice.java
+[Other Info]
+
+    Change-Id: Ibbbd0e02ecc00d421365a13448aaf99a41a613f9
+
+Change-Id: Ib07fb042e8e7339b2ad95c7e543ea024d37a23d6
+
+diff --git a/Collaboration/Collaboration_Client/src/com/goldsand/collaboration/client/phone/audio/AudioManager.java b/Collaboration/Collaboration_Client/src/com/goldsand/collaboration/client/phone/audio/AudioManager.java
+index 4b97181..a664e32 100755
+--- a/Collaboration/Collaboration_Client/src/com/goldsand/collaboration/client/phone/audio/AudioManager.java
++++ b/Collaboration/Collaboration_Client/src/com/goldsand/collaboration/client/phone/audio/AudioManager.java
+@@ -94,15 +94,15 @@ public class AudioManager {
+ 
+         SetCoder();
+ 
+-        if (0 != vieAndroidAPI.VoE_SetECStatus(false)) {
++        if (0 != vieAndroidAPI.VoE_SetECStatus(true)) {
+             Log.d(TAG, "VoE set EC Status failed");
+         }
+ 
+-        if (0 != vieAndroidAPI.VoE_SetAGCStatus(false)) {
++        if (0 != vieAndroidAPI.VoE_SetAGCStatus(true)) {
+             Log.d(TAG, "VoE set AGC Status failed");
+         }
+ 
+-        if (0 != vieAndroidAPI.VoE_SetNSStatus(false)) {
++        if (0 != vieAndroidAPI.VoE_SetNSStatus(true)) {
+             Log.d(TAG, "VoE set NS Status failed");
+         }
+         if (0 != vieAndroidAPI.VoE_StartSend(voiceChannel)) {
+diff --git a/Collaboration/Collaboration_Client/src/org/webrtc/voiceengine/WebRTCAudioDevice.java b/Collaboration/Collaboration_Client/src/org/webrtc/voiceengine/WebRTCAudioDevice.java
+index 58b9efd..7f88e09 100755
+--- a/Collaboration/Collaboration_Client/src/org/webrtc/voiceengine/WebRTCAudioDevice.java
++++ b/Collaboration/Collaboration_Client/src/org/webrtc/voiceengine/WebRTCAudioDevice.java
+@@ -78,11 +78,14 @@ class WebRTCAudioDevice {
+             _audioRecord.release();
+             _audioRecord = null;
+         }
+-
++        /*liuqing add to make the audio record source always from MIC*/
++        if(audioSource != 1){
++            audioSource = 1;
++        }
+         try {
+             _audioRecord = new AudioRecord(
+                             audioSource,
+-                            sampleRate,
++                            sampleRate/2,
+                             AudioFormat.CHANNEL_IN_MONO,
+                             AudioFormat.ENCODING_PCM_16BIT,
+                             recBufSize);
+@@ -148,7 +151,7 @@ class WebRTCAudioDevice {
+         try {
+             _audioTrack = new AudioTrack(
+                             AudioManager.STREAM_VOICE_CALL,
+-                            sampleRate,
++                            sampleRate/2,
+                             AudioFormat.CHANNEL_OUT_MONO,
+                             AudioFormat.ENCODING_PCM_16BIT,
+                             playBufSize, AudioTrack.MODE_STREAM);
+diff --git a/Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/CollaborationService.java b/Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/CollaborationService.java
+index e79b284..f52b8cc 100755
+--- a/Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/CollaborationService.java
++++ b/Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/CollaborationService.java
+@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
+ import android.os.Binder;
+ import android.os.Handler;
+ import android.os.IBinder;
++import android.os.Message;
+ import android.provider.ContactsContract.CommonDataKinds.Phone;
+ import android.telephony.PhoneStateListener;
+ import android.telephony.TelephonyManager;
+@@ -144,15 +145,13 @@ public class CollaborationService extends Service implements IMsgListener{
+             Log.i(TAG, "onMessage().call type = " + phoneJsonObj.getCallType());
+             Log.i(TAG, "onMessage().call serialNo = " + phoneJsonObj.getSerialno());
+             if (Call.State.ACTIVE == Call.numToState(phoneJsonObj.getCallType())) {
+-                // create audio connect
+-                if (mAudioManager != null) {
+-                    String remoteIP = ApplicationManager.getInstance(this).getNetworkInfo().getRemoteIp();
+-                    mAudioManager.setRemoteIP(remoteIP);
+-                    mAudioManager.prepareAudio();
+-                    mAudioManager.startAudio();
+-                }
+                 // Answer call
+                 PhoneUtils.answerCall(this);
++                //liuqing add to make the startaudio after the call state is ACITVE
++                Message msg =Message.obtain(mStartAudio, 0, null);
++                msg.what = 0;
++                mStartAudio.sendMessageDelayed(msg, 1000);
++                String remoteIP = ApplicationManager.getInstance(this).getNetworkInfo().getRemoteIp();
+             } else if (Call.State.DISCONNECTING == Call.numToState(phoneJsonObj.getCallType())) {
+                 // Reject call
+                 PhoneUtils.endCall(this);
+@@ -168,4 +167,24 @@ public class CollaborationService extends Service implements IMsgListener{
+             mAudioManager.stopAudio();
+         }
+     }
++    //liuqing add to make the startaudio after the call state is ACITVE
++    private Handler mStartAudio = new Handler() {
++        @Override
++        public void handleMessage(Message msg) {
++            switch (msg.what) {
++            case 0:
++                // create audio connect
++                if (mAudioManager != null) {
++                    String remoteIP = ApplicationManager.getInstance(CollaborationService.this).getNetworkInfo().getRemoteIp();
++                    Log.i(TAG, "handleMessage() in remoteIP = "+remoteIP);
++                    mAudioManager.setRemoteIP(remoteIP);
++                    mAudioManager.prepareAudio();
++                    mAudioManager.startAudio();
++                }
++                break;
++            default:
++                break;
++            }
++        }
++    };
+ }
+diff --git a/Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/phone/audio/AudioManager.java b/Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/phone/audio/AudioManager.java
+index d8b3e93..a719f18 100755
+--- a/Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/phone/audio/AudioManager.java
++++ b/Collaboration/Collaboration_Server/src/com/goldsand/collaboration/server/phone/audio/AudioManager.java
+@@ -92,15 +92,15 @@ public class AudioManager {
+ 
+         SetCoder();
+ 
+-        if (0 != vieAndroidAPI.VoE_SetECStatus(false)) {
++        if (0 != vieAndroidAPI.VoE_SetECStatus(true)) {
+             Log.d(TAG, "VoE set EC Status failed");
+         }
+ 
+-        if (0 != vieAndroidAPI.VoE_SetAGCStatus(false)) {
++        if (0 != vieAndroidAPI.VoE_SetAGCStatus(true)) {
+             Log.d(TAG, "VoE set AGC Status failed");
+         }
+ 
+-        if (0 != vieAndroidAPI.VoE_SetNSStatus(false)) {
++        if (0 != vieAndroidAPI.VoE_SetNSStatus(true)) {
+             Log.d(TAG, "VoE set NS Status failed");
+         }
+         if (0 != vieAndroidAPI.VoE_StartSend(voiceChannel)) {
+diff --git a/Collaboration/Collaboration_Server/src/org/webrtc/voiceengine/WebRTCAudioDevice.java b/Collaboration/Collaboration_Server/src/org/webrtc/voiceengine/WebRTCAudioDevice.java
+index 7f79a90..faf1f97 100755
+--- a/Collaboration/Collaboration_Server/src/org/webrtc/voiceengine/WebRTCAudioDevice.java
++++ b/Collaboration/Collaboration_Server/src/org/webrtc/voiceengine/WebRTCAudioDevice.java
+@@ -79,11 +79,12 @@ class WebRTCAudioDevice {
+             _audioRecord.release();
+             _audioRecord = null;
+         }
+-
++        //liuqing add for qcom platform
++        audioSource = 3;//AUDIO_SOURCE_VOICE_DOWNLINK
+         try {
+             _audioRecord = new AudioRecord(
+-                            MediaRecorder.AudioSource.MIC, //huxiao add
+-                            sampleRate,
++                            audioSource,
++                            sampleRate/2,
+                             AudioFormat.CHANNEL_IN_MONO,
+                             AudioFormat.ENCODING_PCM_16BIT,
+                             recBufSize);
+@@ -148,8 +149,8 @@ class WebRTCAudioDevice {
+ 
+         try {
+             _audioTrack = new AudioTrack(
+-                            AudioManager.STREAM_VOICE_CALL,
+-                            sampleRate,
++                            10,//AudioManager.STREAM_INCALL_MUSIC,liuqing modify for qcom platform
++                            sampleRate/2,
+                             AudioFormat.CHANNEL_OUT_MONO,
+                             AudioFormat.ENCODING_PCM_16BIT,
+                             playBufSize, AudioTrack.MODE_STREAM);
+-- 
+1.7.0.4
+

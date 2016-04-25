@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CollaborationServer</string>
+    <string name="request_to_connection">请求链接</string>
+    <string name="request_connection_aways_allow">始终允许这个连接</string>
+</resources>

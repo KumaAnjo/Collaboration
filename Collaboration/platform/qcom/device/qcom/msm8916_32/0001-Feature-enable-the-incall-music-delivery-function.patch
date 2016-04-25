@@ -1,0 +1,65 @@
+From 00a7b6171328b709e9fc1b533214488db34f1d86 Mon Sep 17 00:00:00 2001
+From: "qing.liu" <qing.liu@ck-telecom.com>
+Date: Fri, 13 Mar 2015 04:04:45 -0700
+Subject: [PATCH] [Feature]enable the incall music delivery function
+
+[Products]
+   A_baseline
+
+[Requirement]
+   N/A
+
+[Solution Description]
+   modified:   audio_policy.conf
+   modified:   mixer_paths_qrd_skui.xml
+
+[Other Info]
+   N/A
+
+Change-Id: I7d11637ee00ae73ff3c4cb194a08d368c851022a
+
+diff --git a/audio_policy.conf b/audio_policy.conf
+index aa79f68..1e19344 100755
+--- a/audio_policy.conf
++++ b/audio_policy.conf
+@@ -43,6 +43,13 @@ audio_hw_modules {
+         devices AUDIO_DEVICE_OUT_SPEAKER|AUDIO_DEVICE_OUT_EARPIECE|AUDIO_DEVICE_OUT_WIRED_HEADSET|AUDIO_DEVICE_OUT_WIRED_HEADPHONE|AUDIO_DEVICE_OUT_ALL_SCO|AUDIO_DEVICE_OUT_PROXY|AUDIO_DEVICE_OUT_ANLG_DOCK_HEADSET|AUDIO_DEVICE_OUT_FM_TX
+         flags AUDIO_OUTPUT_FLAG_DIRECT|AUDIO_OUTPUT_FLAG_COMPRESS_OFFLOAD|AUDIO_OUTPUT_FLAG_NON_BLOCKING
+       }
++	  incall_music {
++         sampling_rates 8000|16000|48000
++         channel_masks AUDIO_CHANNEL_OUT_MONO
++         formats AUDIO_FORMAT_PCM_16_BIT
++         devices AUDIO_DEVICE_OUT_SPEAKER|AUDIO_DEVICE_OUT_EARPIECE|AUDIO_DEVICE_OUT_WIRED_HEADSET|AUDIO_DEVICE_OUT_WIRED_HEADPHONE|AUDIO_DEVICE_OUT_ANLG_DOCK_HEADSET|AUDIO_DEVICE_OUT_ALL_USB|AUDIO_DEVICE_OUT_ALL_SCO
++         flags AUDIO_OUTPUT_FLAG_DIRECT|AUDIO_OUTPUT_FLAG_INCALL_MUSIC
++	  }
+       voip_rx {
+         sampling_rates 8000|16000
+         channel_masks AUDIO_CHANNEL_OUT_MONO
+diff --git a/mixer_paths_qrd_skui.xml b/mixer_paths_qrd_skui.xml
+old mode 100644
+new mode 100755
+index 4c49b25..b21ab62
+--- a/mixer_paths_qrd_skui.xml
++++ b/mixer_paths_qrd_skui.xml
+@@ -152,7 +152,7 @@
+ 
+     <!-- Incall Music -->
+     <ctl name="Incall_Music Audio Mixer MultiMedia2" value="0" />
+-    <ctl name="Incall_Music_2 Audio Mixer MultiMedia9" value="0" />
++    <ctl name="Incall_Music_2 Audio Mixer MultiMedia5" value="0" />
+     <!-- Incall Music End -->
+ 
+     <!-- QCHAT -->
+@@ -450,7 +450,7 @@
+     </path>
+ 
+     <path name="incall_music_uplink2">
+-        <ctl name="Incall_Music_2 Audio Mixer MultiMedia9" value="1" />
++        <ctl name="Incall_Music_2 Audio Mixer MultiMedia5" value="1" />
+     </path>
+ 
+     <path name="volte-call">
+-- 
+1.7.9.5
+

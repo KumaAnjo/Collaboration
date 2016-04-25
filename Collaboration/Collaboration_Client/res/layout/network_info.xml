@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <Button android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="15dp"
+        android:text="@string/net_refresh" />
+
+    <RelativeLayout
+        android:id="@+id/answer_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp" >
+
+        <TextView
+            android:id="@+id/net_conn_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/net_connection"
+            android:textSize="@dimen/incall_status_font_size" />
+
+        <TextView
+            android:id="@+id/net_conn_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/net_conn_desc"
+            android:layout_toRightOf="@id/net_conn_desc"
+            android:layout_marginLeft="75dp"
+            android:text="@string/net_unknow" />
+
+        <TextView
+            android:id="@+id/net_conn_num_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/net_conn_desc"
+            android:text="@string/net_connectable_num"
+            android:textSize="@dimen/incall_status_font_size" />
+
+        <TextView
+            android:id="@+id/net_conn_num_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/net_conn_num_desc"
+            android:layout_toRightOf="@id/net_conn_num_desc"
+            android:layout_alignLeft="@id/net_conn_content"
+            android:text="@string/net_unknow" />
+
+        <TextView
+            android:id="@+id/net_local_ip_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/net_conn_num_desc"
+            android:text="@string/net_local_ip"
+            android:textSize="@dimen/incall_status_font_size" />
+
+        <TextView
+            android:id="@+id/net_local_ip_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/net_local_ip_desc"
+            android:layout_toRightOf="@id/net_local_ip_desc"
+            android:layout_alignLeft="@id/net_conn_content"
+            android:text="@string/net_unknow" />
+
+        <TextView
+            android:id="@+id/net_remote_ip_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/net_local_ip_desc"
+            android:text="@string/net_remote_ip"
+            android:textSize="@dimen/incall_status_font_size" />
+
+        <TextView
+            android:id="@+id/net_remote_ip_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/net_remote_ip_desc"
+            android:layout_toRightOf="@id/net_remote_ip_desc"
+            android:layout_alignLeft="@id/net_conn_content"
+            android:text="@string/net_unknow" />
+
+        <TextView
+            android:id="@+id/net_rev_port_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/net_remote_ip_desc"
+            android:text="@string/net_rev_port"
+            android:textSize="@dimen/incall_status_font_size" />
+
+        <TextView
+            android:id="@+id/net_rev_port_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/net_rev_port_desc"
+            android:layout_toRightOf="@id/net_rev_port_desc"
+            android:layout_alignLeft="@id/net_conn_content"
+            android:text="@string/net_unknow"
+            android:inputType="number"
+            android:enabled="false" />
+
+        <TextView
+            android:id="@+id/net_send_port_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/net_rev_port_desc"
+            android:text="@string/net_send_port"
+            android:textSize="@dimen/incall_status_font_size" />
+
+        <TextView
+            android:id="@+id/net_send_port_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/net_send_port_desc"
+            android:layout_toRightOf="@id/net_send_port_desc"
+            android:layout_alignLeft="@id/net_conn_content"
+            android:text="@string/net_unknow"
+            android:inputType="number"
+            android:enabled="false" />
+    </RelativeLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button android:id="@+id/start_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/net_start_connect" />
+        <Button android:id="@+id/stop_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/net_stop_connect" />
+    </LinearLayout>
+
+</LinearLayout>

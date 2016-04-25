@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CollaborationServer</string>
+    <string name="request_to_connection">Allow connection?</string>
+    <string name="request_connection_title">IP:%s</string>
+    <string name="request_connection_aways_allow">Always allow this connection</string>
+</resources>

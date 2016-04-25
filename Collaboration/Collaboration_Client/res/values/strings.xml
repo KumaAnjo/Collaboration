@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Collaboration Client</string>
+
+    <!-- InCall UI -->
+    <string name="accept_call">Accept</string>
+    <string name="reject_call">Reject</string>
+    <string name="ignore_call">Ignore</string>
+    <string name="end_call">End Call</string>
+
+    <string name="call_state_idle">no call</string>
+    <string name="call_state_incoming">Incoming</string>
+    <string name="call_state_active">Calling</string>
+    <string name="call_state_holding">Hold on</string>
+
+    <!--  Network information -->
+    <string name="net_activity_name">Network Information</string>
+    <string name="net_connection">Connect Status:</string>
+    <string name="net_connectable_num">Connectable Num:</string>
+    <string name="net_local_ip">Local IP:</string>
+    <string name="net_remote_ip">Remote IP:</string>
+    <string name="net_rev_port">Receive Port:</string>
+    <string name="net_send_port">Send Port:</string>
+    <string name="net_refresh">Refresh</string>
+    <string name="net_start_connect">Start Connect</string>
+    <string name="net_stop_connect">Stop Connect</string>
+    <string name="net_unknow">Unknow</string>
+
+    <string name="net_state_connected">Connected</string>
+    <string name="net_state_disconnected">Disconnected</string>
+    <string name="net_state_client_broadcast_conflict">Broadcast Conflict</string>
+    <string name="net_state_connect_conflict">Connect Conflict</string>
+    <string name="net_state_exception">Connect Exception</string>
+</resources>

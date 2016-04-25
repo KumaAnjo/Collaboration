@@ -1,0 +1,91 @@
+From 141b4d68c2e349cb1c1234f72b2c0856e30e3b48 Mon Sep 17 00:00:00 2001
+From: "qing.liu" <qing.liu@ck-telecom.com>
+Date: Thu, 12 Feb 2015 02:04:22 -0800
+Subject: [PATCH] [Feature][Audio]modify to support the incall music delivery
+ function(two sim slot function has enabled)
+
+[Products]
+    A_baseline
+
+[Requirement]
+    N/A
+
+[Solution Description]
+    modified:   hal/voice_extn/voice_extn.c
+    modified:   policy_hal/AudioPolicyManager.cpp
+    modified:   hal/audio_hw.c
+    modified:   hal/msm8916/platform.h
+
+[Other Info]
+    N/A
+
+Change-Id: I7a72cd7cce8f74680d9f89bb26c3e78a9b7a8cf5
+
+diff --git a/hal/audio_hw.c b/hal/audio_hw.c
+old mode 100644
+new mode 100755
+index d06a4d5..c5d9e9d
+--- a/hal/audio_hw.c
++++ b/hal/audio_hw.c
+@@ -2336,6 +2336,8 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
+ 
+     } else if (out->flags & AUDIO_OUTPUT_FLAG_INCALL_MUSIC) {
+         ret = voice_check_and_set_incall_music_usecase(adev, out);
++		//liuqing add for make the config not be changed by latest function.for incall music delivery function
++		out->config.rate = config->sample_rate;
+         if (ret != 0) {
+             ALOGE("%s: Incall music delivery usecase cannot be set error:%d",
+                   __func__, ret);
+diff --git a/hal/msm8916/platform.h b/hal/msm8916/platform.h
+old mode 100644
+new mode 100755
+index bd9351e..f0d2d87
+--- a/hal/msm8916/platform.h
++++ b/hal/msm8916/platform.h
+@@ -179,7 +179,8 @@ enum {
+ #define HFP_ASM_RX_TX 18
+ 
+ #define INCALL_MUSIC_UPLINK_PCM_DEVICE 1
+-#define INCALL_MUSIC_UPLINK2_PCM_DEVICE 16
++//liuqing modify to enable the slot2 incall music delivery function
++#define INCALL_MUSIC_UPLINK2_PCM_DEVICE 12
+ #define SPKR_PROT_CALIB_RX_PCM_DEVICE 5
+ #define SPKR_PROT_CALIB_TX_PCM_DEVICE 22
+ #define PLAYBACK_OFFLOAD_DEVICE 9
+diff --git a/hal/voice_extn/voice_extn.c b/hal/voice_extn/voice_extn.c
+old mode 100644
+new mode 100755
+index 9f2ca68..015bba0
+--- a/hal/voice_extn/voice_extn.c
++++ b/hal/voice_extn/voice_extn.c
+@@ -589,8 +589,8 @@ int voice_extn_check_and_set_incall_music_usecase(struct audio_device *adev,
+                                                   struct stream_out *out)
+ {
+     uint32_t session_id = 0;
+-
+-    session_id = get_session_id_with_state(adev, CALL_LOCAL_HOLD);
++	//liuqing modify to make the call state satisfy the request
++    session_id = get_session_id_with_state(adev, CALL_ACTIVE);
+     if (session_id == VOICE_VSID) {
+         out->usecase = USECASE_INCALL_MUSIC_UPLINK;
+     } else if (session_id == VOICE2_VSID) {
+diff --git a/policy_hal/AudioPolicyManager.cpp b/policy_hal/AudioPolicyManager.cpp
+old mode 100644
+new mode 100755
+index c8c5659..2a97ac0
+--- a/policy_hal/AudioPolicyManager.cpp
++++ b/policy_hal/AudioPolicyManager.cpp
+@@ -1057,6 +1057,10 @@ audio_io_handle_t AudioPolicyManager::getOutput(AudioSystem::stream_type stream,
+             }
+             else {
+                 ALOGD(" IN call mode adding ULL flags .. flags: %x ", flags );
++				//liuqing add to make it will call the Audio_hw.c adev_open_output_stream() and finally call the voice_extn_check_and_set_incall_music_usecase()
++				if(stream == AUDIO_STREAM_INCALL_MUSIC){
++						flags = (AudioSystem::output_flags)0x8001;
++					}else
+                 flags = (AudioSystem::output_flags)AUDIO_OUTPUT_FLAG_FAST;
+             }
+         }
+-- 
+1.7.9.5
+

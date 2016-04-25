@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="incall_btn_marginleft">10dp</dimen>
+    <dimen name="incall_btn_marginright">12dp</dimen>
+    <dimen name="incall_btn_margintop">10dp</dimen>
+    <dimen name="incall_btn_marginbottom">0dp</dimen>
+    <dimen name="incall_btn_distance">1dp</dimen>
+
+    <dimen name="incall_info_margintop">7dp</dimen>
+    <dimen name="incall_info_marginleft">15dp</dimen>
+
+    <dimen name="incall_font_size">20sp</dimen>
+    <dimen name="incall_status_font_size">15sp</dimen>
+    <dimen name="incall_timer_font_size">8sp</dimen>
+    <dimen name="incall_btn_font_size">20sp</dimen>
+
+</resources>
